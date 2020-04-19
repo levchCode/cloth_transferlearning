@@ -1,0 +1,54 @@
+<meta charset="UTF-8">
+<div>Перенос обучения (ткани)</div>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+<script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+
+<script type="text/javascript">
+  let video;
+  let clf;
+
+  let label = "Загрузка..."
+
+  //Ссылка на модель
+  let imageModelURL = 'https://teachablemachine.withgoogle.com/models/73XgumX-/';
+  
+  // Загрузка модели
+  function preload() {
+    clf = ml5.imageClassifier(imageModelURL + 'model.json');
+  }
+
+  function setup() {
+    createCanvas(640, 520)
+    video = createCapture(VIDEO)
+    video.hide();
+    document.getElementById("result").innerHTML = label
+    classVideo();
+  }
+
+  function draw(){
+    background(0)
+    image(video, 0, 0)
+  }
+
+  function classVideo()
+  {
+    clf.classify(video, resultCallback)
+  }
+
+  function resultCallback(err, res)
+  {
+    if (err)
+    {
+      console.error(err)
+      return
+    }
+
+    label = res[0].label
+    document.getElementById("result").innerHTML = label
+  }
+
+</script>
+
+<p id="result"></p>
